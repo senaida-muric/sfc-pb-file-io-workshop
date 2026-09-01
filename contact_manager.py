@@ -7,6 +7,7 @@ If you would like to do that as a Bonus exercise, that would be good way
 to practice using OOP and composition!
 """
 
+import json
 
 class ContactManager:
     """Class to do CRUD operations on the list of contacts"""
@@ -22,11 +23,15 @@ class ContactManager:
         Bonus: What should happen if the file isn't there?
                 What should happen if the file has invalid JSON in it?
         """
-        return []
+        with open(self.file, "r") as file:
+            self.contacts = json.load(file)
+        return self.contacts
 
     def add_contact(self, contact):
         """Adds a contact to the list, and saves the file"""
-        pass
+        self.contacts.append(contact)
+        with open(self.file, "w") as file:
+            json.dump(self.contacts, file)
 
     def update_contact(self, contact_to_update):
         """
@@ -34,7 +39,14 @@ class ContactManager:
 
         Bonus: What happens when the id doesn't exist?
         """
-        pass
+        for contact in self.contacts:
+            if contact["id"] == contact_to_update["id"]:
+                contact["name"] = contact_to_update["name"]
+                contact["email"] = contact_to_update["email"]
+                contact["phone"] = contact_to_update["phone"]
+                
+        with open(self.file, "w") as file:
+            json.dump(self.contacts, file)
 
     def delete_contact(self, id_to_delete):
         """
@@ -42,4 +54,10 @@ class ContactManager:
 
         Bonus: What happens when the id doesn't exist?
         """
-        pass
+        for contact in self.contacts:
+            if contact["id"] == id_to_delete:
+                self.contacts.remove(contact)
+
+            with open(self.file, "w") as file:
+                json.dump(self.contacts, file)
+
